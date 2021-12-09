@@ -51,3 +51,11 @@ def delete_item(key, table):
 	tab = client.Table(table)
 	response = tab.delete_item(Key=key)
 	return response
+
+
+def update_item(key, table):
+	tab = client.Table(table)
+	response = tab.update_item(key=key)
+	return response
+
+

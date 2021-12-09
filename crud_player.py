@@ -1,5 +1,7 @@
 from dydb import create_item, delete_item, read_item, read_items
 from flask_server import logger
+from flask import request, jsonify
+
 
 table = 'urban-player'
 
@@ -18,7 +20,7 @@ def create_player(mail, name, organiser=None):
 	if organiser:
 		player["organiser"] = True
 
-	return create_item(player, table)
+	return create_item(player, table), 200
 
 
 def get_player(mail):
@@ -48,9 +50,14 @@ def delete_player(mail):
 	delete s a player from table
 	:param mail: player's email
 	"""
-	response = delete_item(mail, table)
-	# TODO format response and catch error
-	return response
+	key = {'mail': mail}
+	response = delete_item(key, table)
+	status_code = response["ResponseMetadata"]["HTTPStatusCode"]
+	if status_code == 200:
+		return jsonify(response)
+	else:
+		logger(response)
+		return {}
 
 
 def update_player(mail, name=None, organiser=None):
